@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.static import serve
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 import settings
 
 urlpatterns = [
@@ -24,3 +25,4 @@ urlpatterns = [
     url(r'^assets/(?P<path>.*)$', serve,
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 ]
+urlpatterns += staticfiles_urlpatterns()
