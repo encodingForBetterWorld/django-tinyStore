@@ -20,7 +20,7 @@ import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^tinystore/', include('wechat.urls')),
+    url(r'^api/', include('wechat.urls')),
     url(r'^assets/(?P<path>.*)$', serve,
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 ]
