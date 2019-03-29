@@ -8,9 +8,6 @@ threads = 16  # multiprocessing.cpu_count()*4 #指定每个进程开启的线程
 loglevel = 'info'  # 日志级别，这个日志级别指的是错误日志的级别，而访问日志的级别无法设置
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
 daemon = True
-# accesslog = "/home/log/gunicorn_access.log"      #访问日志文件
-# errorlog = "/home/log/gunicorn_error.log"        #错误日志文件
-accesslog = "-"  # 访问日志文件，"-" 表示标准输出
-errorlog = "-"  # 错误日志文件，"-" 表示标准输出
-
+errorlog = "/var/log/gunicorn/django_tiny_store.error.log"  # 错误日志文件，"-" 表示标准输出
+errorlog = "/var/log/gunicorn/django_tiny_store.access.log"
 proc_name = 'django_tiny_store'  # 进程名
