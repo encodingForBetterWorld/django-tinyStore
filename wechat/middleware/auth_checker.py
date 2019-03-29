@@ -7,6 +7,8 @@ class AuthMiddleWare():
     def process_request(self, request):
         if not request.path.startswith("/api"):
             return
+        if request.path.startswith("/api/auth"):
+            return
         openid = request.session.get('openid', None)
         if openid is None:
             return JsonResponse({
