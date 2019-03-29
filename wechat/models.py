@@ -11,6 +11,7 @@ EXPRESS_TYPES = (
     ("STO", "申通")
 )
 
+
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     openid = models.CharField(max_length=100, verbose_name="微信OPENID", null=True, blank=True, unique=True)
@@ -61,7 +62,7 @@ class GoodsType(models.Model):
     img = models.FileField(verbose_name="商品图片", null=True, upload_to="goods", blank=True)
     count = models.IntegerField(verbose_name="库存", null=True)
     old_price = models.FloatField(verbose_name="原价", null=True, blank=True)
-    price = models.FloatField(verbose_name="现价", null=True, blank=True)
+    price = models.FloatField(verbose_name="现价")
     create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True, null=True)
 
     class Meta:
