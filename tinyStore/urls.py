@@ -17,12 +17,13 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.static import serve
 import settings
-from django.contrib.staticfiles.urls import static
+from django.contrib.staticfiles.urls import static, staticfiles_urlpatterns
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^api/', include('wechat.urls')),
     url(r'^assets/tinystore/(?P<path>.*)$', serve,
-        {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+        {'document_root': settings.MEDIA_ROOT, 'show_indexes': True})
 ]
+urlpatterns += staticfiles_urlpatterns()
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
