@@ -5,11 +5,7 @@ from tinyStore.settings import STATUS_NONE_AUTH
 class AuthMiddleWare():
 
     def process_request(self, request):
-        if request.path.startswith("/admin"):
-            return
-        if request.path.startswith("/assets"):
-            return
-        if request.path.startswith("/tinystore/auth"):
+        if not request.path.startswith("/tiny-store/api"):
             return
         openid = request.session.get('openid', None)
         if openid is None:
