@@ -60,7 +60,6 @@ xlwt = "==1.1.2"
 Pygments = "==2.2.0"
 PyMySQL = "==0.7.11"
 XlsxWriter = "==1.0.2"
-demjson = "*"
 
 [requires]
 python_version = "2.7"

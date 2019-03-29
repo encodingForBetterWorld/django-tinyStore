@@ -31,7 +31,7 @@ WX_API_Jscode2session = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&s
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'gunicorn',
     'wechat'
 ]
 
