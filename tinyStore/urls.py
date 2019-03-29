@@ -23,6 +23,6 @@ urlpatterns = [
     url(r'^api/', include('wechat.urls')),
     url(r'^assets/tinystore/(?P<path>.*)$', serve,
         {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-    url(r'^static/tinystore/(?P<path>.*)$', serve,
+    url(r'^static/(?P<path>.*)$', serve,
             {'document_root': settings.STATIC_ROOT, 'show_indexes': True}),
 ]
