@@ -182,7 +182,7 @@ def order_confirm_data(request):
         order_datas.append(order_data)
     addresses = user.address_set.filter(is_showing=True).order_by("-is_default", "-create_time")
     return success_resp({
-        "total_price": total_price,
+        "total_price": round(total_price, 2),
         "total_count": total_count,
         "freight": freight,
         "addresses": serializers.AddressSerializer(addresses, many=True).data,
@@ -317,7 +317,7 @@ def order_submit(request):
         print "创建订单失败：无效的订单数据"
         return error_resp("创建订单失败")
     order.total_count = total_count
-    order.total_price = total_price
+    order.total_price = round(total_price, 2)
     order.code = "{:.0f}".format(time.time()) + "{:0>5d}".format(order.id)
 
     if order_name:
