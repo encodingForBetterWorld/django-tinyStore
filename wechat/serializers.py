@@ -3,6 +3,12 @@ import models
 from rest_framework import serializers
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.User
+        exclude = ("id", "openid", "last_login_time", "create_time")
+
+
 class BannerSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Banner

@@ -15,8 +15,8 @@ EXPRESS_TYPES = (
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     openid = models.CharField(max_length=100, verbose_name="微信OPENID", null=True, blank=True, unique=True)
-    nickname = models.CharField(max_length=100, verbose_name="微信用户名")
-    avatarurl = models.CharField(max_length=1000, verbose_name="微信用户头像")
+    nickname = models.CharField(max_length=100, verbose_name="微信用户名", null=True)
+    avatarurl = models.CharField(max_length=1000, verbose_name="微信用户头像", null=True)
     gender = models.IntegerField(null=True, verbose_name="微信用户性别", default=0, choices=((0, "未知"), (1, "男性"), (2, "女性")))
     country = models.CharField(max_length=100, verbose_name="微信用户所在国家")
     province = models.CharField(max_length=100, verbose_name="微信用户所在省份")
