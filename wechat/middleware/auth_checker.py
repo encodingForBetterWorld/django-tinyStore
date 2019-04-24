@@ -9,6 +9,8 @@ class AuthMiddleWare():
             return
         if request.path.startswith("/api/auth"):
             return
+        if request.path.startswith("/api/h5_auth"):
+            return
         openid = request.session.get('openid', None)
         if openid is None:
             return JsonResponse({
