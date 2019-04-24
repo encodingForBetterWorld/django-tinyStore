@@ -1,8 +1,9 @@
-from django.conf.urls import url,include
+from django.conf.urls import url
 from wechat import views
 
 urlpatterns = [
     url(r'^auth$', views.wx_auth),
+    url(r'^h5_auth$', views.h5_auth),
     url(r'^index_data$', views.index_data),
     url(r'^qrcode_data$', views.qrcode_data),
 
@@ -17,5 +18,5 @@ urlpatterns = [
     url(r'^order_edit$', views.order_edit),
     url(r'^order_detail$', views.order_detail),
     url(r'^order_confirm_data$', views.order_confirm_data),
-    url(r'^order_submit$', views.order_submit),
+    url(r'^order_submit$', views.order_submit)
 ]

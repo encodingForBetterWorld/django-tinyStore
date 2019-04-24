@@ -59,6 +59,21 @@ def read_dict(request):
     return dic
 
 
+@api_view(['GET'])
+def h5_auth(request):
+    try:
+        user = models.User.objects.get(openid="h5-test")
+    except models.User.DoesNotExist:
+        user = models.User(openid="h5-test",
+                           nickname="Test",
+                           language="zh_CN")
+        user.save()
+    request.session["openid"] = "h5-test"
+    print serializers.UserSerializer(user).data
+    return success_resp(data=serializers.UserSerializer(user).data,
+                        msg="授权登陆成功")
+
+
 @api_view(['POST'])
 def wx_auth(request):
     """
