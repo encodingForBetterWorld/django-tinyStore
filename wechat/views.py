@@ -218,14 +218,17 @@ def address_edit(request):
         print "添加地址失败：无效的参数"
         return error_resp("无效的参数")
     if req_data.get("is_default"):
-        for address in user.address_set.filter(is_default=True):
-            address.is_default = False
-            address.save()
+        user.address_set.filter(is_default=True).update(is_default=False)
     else:
-        if user.address_set.filter(is_default=True).count() == 0:
+        if user.address_set.filter(is_showing=True, is_default=True).count() == 0:
             req_data["is_default"] = True
     address_id = req_data.pop("id", None)
     if address_id:
+        ft = user.address_set.filter(~Q(id=address_id), is_showing=True)
+        if req_data.get("is_showing") == False and ft.filter(is_default=True).count() == 0:
+            first_addr = ft.order_by("-create_time").first()
+            first_addr.is_default=True
+            first_addr.save()
         try:
             address = models.Address.objects.get(id=address_id)
         except models.Address.DoesNotExist:
