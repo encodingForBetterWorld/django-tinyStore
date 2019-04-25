@@ -229,8 +229,9 @@ def address_edit(request):
         ft = user.address_set.filter(~Q(id=address_id), is_showing=True)
         if req_data.get("is_showing") == False and ft.filter(is_default=True).count() == 0:
             first_addr = ft.order_by("-create_time").first()
-            first_addr.is_default = True
-            first_addr.save()
+            if first_addr:
+                first_addr.is_default = True
+                first_addr.save()
         try:
             address = models.Address.objects.get(id=address_id)
         except models.Address.DoesNotExist:
