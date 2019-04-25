@@ -9,6 +9,8 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.translation import ugettext as _
 import datetime, time
+
+
 # Create your views here.
 
 
@@ -227,7 +229,7 @@ def address_edit(request):
         ft = user.address_set.filter(~Q(id=address_id), is_showing=True)
         if req_data.get("is_showing") == False and ft.filter(is_default=True).count() == 0:
             first_addr = ft.order_by("-create_time").first()
-            first_addr.is_default=True
+            first_addr.is_default = True
             first_addr.save()
         try:
             address = models.Address.objects.get(id=address_id)
@@ -315,6 +317,12 @@ def order_submit(request):
                 freight=freight,
                 status=0,
                 remark=remark,
+                addressee_name=address.name,
+                addressee_phone=address.phone,
+                addressee_province=address.province,
+                addressee_city=address.city,
+                addressee_area=address.area,
+                addressee_detail=address.detail
             )
             order.save()
         models.OrderItem(
@@ -328,7 +336,7 @@ def order_submit(request):
             img=goods_type.img
         ).save()
         total_count += goods_type_count
-        total_price += (goods_type_count*goods_type.price)
+        total_price += (goods_type_count * goods_type.price)
         if goods_type.goods.name:
             order_name += (goods_type.goods.name + u"、")
     if order is None:

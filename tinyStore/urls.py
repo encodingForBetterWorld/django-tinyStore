@@ -20,9 +20,9 @@ import settings
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^api/', include('wechat.urls')),
-    url(r'^assets/tinystore/(?P<path>.*)$', serve,
-        {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
-    url(r'^static/tinystore/(?P<path>.*)$', serve,
-            {'document_root': settings.STATIC_ROOT}),
+    url(r'^api/', include('wechat.urls'))
+    # url(r'^assets/tinystore/(?P<path>.*)$', serve,
+    #     {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
+    # url(r'^static/tinystore/(?P<path>.*)$', serve,
+    #     {'document_root': settings.STATIC_ROOT}),
 ]

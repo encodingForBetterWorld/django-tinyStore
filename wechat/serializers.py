@@ -73,7 +73,7 @@ class OderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
 
     orderitem_set = OderItemSerializer(many=True, read_only=True)
-    address = AddressSerializer(read_only=True)
+    # address = AddressSerializer(read_only=True)
     create_time = serializers.DateTimeField(format="%Y-%m-%d %H:%M:%S", required=False, read_only=True)
 
     class Meta:

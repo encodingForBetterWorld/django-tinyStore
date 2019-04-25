@@ -35,10 +35,10 @@ class User(models.Model):
 
 class Goods(models.Model):
     name = models.CharField(max_length=100, verbose_name="名称", null=True)
-    min_old_price = models.FloatField(verbose_name="最低原价", null=True, blank=True)
-    max_old_price = models.FloatField(verbose_name="最高原价", null=True, blank=True)
-    min_price = models.FloatField(verbose_name="最低现价", null=True)
-    max_price = models.FloatField(verbose_name="最高现价", null=True)
+    min_old_price = models.FloatField(verbose_name="最低原价", null=True, blank=True, editable=False)
+    max_old_price = models.FloatField(verbose_name="最高原价", null=True, blank=True, editable=False)
+    min_price = models.FloatField(verbose_name="最低现价", null=True, editable=False)
+    max_price = models.FloatField(verbose_name="最高现价", null=True, editable=False)
     description = models.CharField(max_length=1000, verbose_name="描述", null=True, blank=True)
     weight = models.IntegerField(verbose_name="权重", null=True, default=0)
     type = models.IntegerField(verbose_name="商品类型", null=True, default=0, blank=True)
@@ -68,6 +68,29 @@ class GoodsType(models.Model):
     class Meta:
         verbose_name = "商品"
         verbose_name_plural = "商品"
+
+    def save(self, **kwargs):
+        if self.goods_id:
+            try:
+                goods = Goods.objects.get(id=self.goods_id)
+            except Goods.DoesNotExist:
+                pass
+            else:
+                sf = """
+ft = goods.goodstype_set
+if self.id:
+    ft = goods.goodstype_set.filter(~models.Q(id=self.id))
+max_price = ft.aggregate(max_price=models.Max('{0}price')).get('max_price')
+min_price = ft.aggregate(min_price=models.Min('{0}price')).get('min_price')
+if isinstance(max_price, (int,float)):
+    goods.max_{0}price = max(max_price, self.{0}price)
+if isinstance(min_price, (int,float)):
+    goods.min_{0}price = min(min_price, self.{0}price)
+                """
+                exec sf.format('')
+                exec sf.format('old_')
+                goods.save()
+        return super(GoodsType, self).save(**kwargs)
 
     def __unicode__(self):
         return self.description
@@ -117,6 +140,12 @@ class Order(models.Model):
     is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     code = models.CharField(max_length=255, verbose_name="订单号", unique=True, null=True)
     express_code = models.CharField(null=True, verbose_name="快递单号", max_length=30)
+    addressee_name = models.CharField(max_length=100, verbose_name="收件人", null=True)
+    addressee_phone = models.CharField(max_length=100, verbose_name="电话", null=True)
+    addressee_province = models.CharField(max_length=100, verbose_name="国家", null=True)
+    addressee_city = models.CharField(max_length=100, verbose_name="省份", null=True)
+    addressee_area = models.CharField(max_length=100, verbose_name="城市", null=True)
+    addressee_detail = models.CharField(max_length=100, verbose_name="详细信息", null=True)
 
     class Meta:
         verbose_name = "订单"
