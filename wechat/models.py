@@ -82,9 +82,13 @@ if self.id:
     ft = goods.goodstype_set.filter(~models.Q(id=self.id))
 max_price = ft.aggregate(max_price=models.Max('{0}price')).get('max_price')
 min_price = ft.aggregate(min_price=models.Min('{0}price')).get('min_price')
-if isinstance(max_price, (int,float)):
+if max_price is None:
+    goods.max_{0}price = self.{0}price
+else:
     goods.max_{0}price = max(max_price, self.{0}price)
-if isinstance(min_price, (int,float)):
+if min_price is None:
+    goods.min_{0}price = self.{0}price
+else:
     goods.min_{0}price = min(min_price, self.{0}price)
                 """
                 exec sf.format('')
