@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.utils.translation import ugettext as _
 import datetime, time
+from django.core.paginator import PageNotAnInteger, EmptyPage, Paginator
 
 
 # Create your views here.
@@ -24,7 +25,7 @@ def error_resp(msg, data=None):
     return common_resp(data, msg, STATUS_ERROR)
 
 
-def success_resp(data, msg):
+def success_resp(data, msg, page=None):
     """
     通用的成功响应
     :param data:响应内容
@@ -32,6 +33,11 @@ def success_resp(data, msg):
     :param integer_status:是否返回整形status，默认为否
     :return:JsonResponse
     """
+    if page:
+        data["page"] = {
+            "page": page.number,
+            "page_max": page.paginator.num_pages
+        }
     return common_resp(data, msg, STATUS_SUCCESS)
 
 
@@ -59,6 +65,26 @@ def read_dict(request):
         print e.message
         return {}
     return dic
+
+
+def paginate(req, data, num=8):
+    """
+    返回分页数据的响应体
+    :param request:
+    :param data:
+    :param num:
+    :param callback:
+    :return:
+    """
+    paginator = Paginator(data, num)
+    page = req.GET.get("page")
+    try:
+        datas = paginator.page(page)
+    except PageNotAnInteger:
+        datas = paginator.page(1)
+    except EmptyPage:
+        datas = paginator.page(paginator.num_pages)
+    return datas
 
 
 @api_view(['GET'])
@@ -131,10 +157,11 @@ def index_data(request):
     """
     banners = models.Banner.objects.filter(is_showing=True, type=0).order_by("-weight", "-create_time").all()
     goods = models.Goods.objects.filter(is_showing=True).order_by("-weight", "-create_time").all()
+    goods_page = paginate(request, goods)
     return success_resp({
         "banners": serializers.BannerSerializer(banners, many=True).data,
-        "goodses": serializers.IndexGoodsSerializer(goods, many=True).data
-    }, _(u"获取首页数据成功"))
+        "goodses": serializers.IndexGoodsSerializer(goods_page, many=True).data,
+    }, _(u"获取首页数据成功"), page=goods_page)
 
 
 @api_view(['GET'])
@@ -244,6 +271,15 @@ def address_edit(request):
         setattr(address, k, v)
     address.save()
     return success_resp({}, _(u"添加地址成功"))
+
+
+@api_view(['GET'])
+def goods_list(request):
+    goods = models.Goods.objects.filter(is_showing=True).order_by("-weight", "-create_time").all()
+    goods_page = paginate(request, goods)
+    return success_resp({
+        "goodses": serializers.IndexGoodsSerializer(goods_page, many=True).data,
+    }, _(u"获取商品数据成功"), page=goods_page)
 
 
 @api_view(['GET'])
@@ -405,8 +441,10 @@ def order_list(request):
         orders = user.order_set.filter(status=status).order_by("-create_time").all()
     else:
         orders = user.order_set.filter(~Q(status__in=(0, 1, 2))).order_by("status", "-create_time").all()
-    return success_resp(serializers.OrderListSerializer(orders, many=type).data,
-                        _(u"获取用户订单成功"))
+    orders = paginate(request, orders)
+    return success_resp({
+        "orders": serializers.OrderListSerializer(orders, many=type).data
+    }, _(u"获取用户订单成功"), page=orders)
 
 
 @api_view(['POST'])

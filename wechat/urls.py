@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^index_data$', views.index_data),
     url(r'^qrcode_data$', views.qrcode_data),
 
+    url(r'^goods_list$', views.goods_list),
     url(r'^goods_detail$', views.goods_detail),
     url(r'^cart_list$', views.cart_list),
 
