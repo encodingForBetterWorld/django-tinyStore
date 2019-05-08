@@ -97,7 +97,6 @@ def h5_auth(request):
                            language="zh_CN")
         user.save()
     request.session["openid"] = "h5-test"
-    print serializers.UserSerializer(user).data
     return success_resp(data=serializers.UserSerializer(user).data,
                         msg="授权登陆成功")
 

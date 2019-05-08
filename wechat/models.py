@@ -66,6 +66,7 @@ class GoodsType(models.Model):
     create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True, null=True)
 
     class Meta:
+        ordering = ['price', 'create_time']
         verbose_name = "商品"
         verbose_name_plural = "商品"
 
