@@ -154,8 +154,8 @@ def index_data(request):
             无
     :return:http响应体>轮播图列表的json数据
     """
-    banners = models.Banner.objects.filter(is_showing=True, type=0).order_by("-weight", "-create_time").all()
-    goods = models.Goods.objects.filter(is_showing=True).order_by("-weight", "-create_time").all()
+    banners = models.Banner.objects.filter(type=0).order_by("-weight", "-create_time").all()
+    goods = models.Goods.objects.order_by("-weight", "-create_time").all()
     goods_page = paginate(request, goods)
     return success_resp({
         "banners": serializers.BannerSerializer(banners, many=True).data,
@@ -178,7 +178,7 @@ def goods_detail(request):
     except models.Goods.DoesNotExist:
         print "查询商品失败：无效的商品ID%s" % goods_id
         return error_resp("无效的商品ID")
-    goods_types = goods.goodstype_set.filter(is_showing=True).order_by("description").all()
+    goods_types = goods.goodstype_set.all()
     return success_resp({
         "goods": serializers.IndexGoodsSerializer(goods).data,
         "goods_types": serializers.GoodsTypeSerializer(goods_types, many=True).data
@@ -223,7 +223,7 @@ def order_confirm_data(request):
                       "price": goods_type.price,
                       "count": count}
         order_datas.append(order_data)
-    addresses = user.address_set.filter(is_showing=True).order_by("-is_default", "-create_time")
+    addresses = user.address_set.order_by("-is_default", "-create_time").all()
     return success_resp({
         "total_price": round(total_price, 2),
         "total_count": total_count,
@@ -274,7 +274,7 @@ def address_edit(request):
 
 @api_view(['GET'])
 def goods_list(request):
-    goods = models.Goods.objects.filter(is_showing=True).order_by("-weight", "-create_time").all()
+    goods = models.Goods.objects.order_by("-weight", "-create_time").all()
     goods_page = paginate(request, goods)
     return success_resp({
         "goodses": serializers.IndexGoodsSerializer(goods_page, many=True).data,
@@ -289,7 +289,7 @@ def address_list(request):
     except models.User.DoesNotExist:
         print "查询用户失败：无效的用户ID%s" % openid
         return error_resp("无效的用户ID")
-    addresses = user.address_set.filter(is_showing=True).order_by("-is_default", "-create_time")
+    addresses = user.address_set.order_by("-is_default", "-create_time").all()
     return success_resp({
         "addresses": serializers.AddressSerializer(addresses, many=True).data,
     }, _(u"获取用户地址数据成功"))

@@ -12,6 +12,23 @@ EXPRESS_TYPES = (
 )
 
 
+class FakeDeleteModalManager(models.Manager):
+    def all(self):
+        return super(FakeDeleteModalManager, self).filter(is_showing=True).all()
+
+
+class FakeDeleteModal(models.Model):
+    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
+    objects = FakeDeleteModalManager()
+
+    def delete(self, **kwargs):
+        self.is_showing = False
+        return super(FakeDeleteModal, self).save()
+
+    class Meta:
+        abstract = True
+
+
 class User(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     openid = models.CharField(max_length=100, verbose_name="微信OPENID", null=True, blank=True, unique=True)
@@ -33,7 +50,7 @@ class User(models.Model):
         return self.nickname
 
 
-class Goods(models.Model):
+class Goods(FakeDeleteModalManager):
     name = models.CharField(max_length=100, verbose_name="名称", null=True)
     min_old_price = models.FloatField(verbose_name="最低原价", null=True, blank=True, editable=False)
     max_old_price = models.FloatField(verbose_name="最高原价", null=True, blank=True, editable=False)
@@ -42,7 +59,6 @@ class Goods(models.Model):
     description = models.CharField(max_length=1000, verbose_name="描述", null=True, blank=True)
     weight = models.IntegerField(verbose_name="权重", null=True, default=0)
     type = models.IntegerField(verbose_name="商品类型", null=True, default=0, blank=True)
-    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     img = models.FileField(verbose_name="商品图片", null=True, upload_to="goods", blank=True)
     create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True, null=True)
 
@@ -54,11 +70,10 @@ class Goods(models.Model):
         return self.name
 
 
-class GoodsType(models.Model):
+class GoodsType(FakeDeleteModalManager):
     goods = models.ForeignKey(Goods, verbose_name="商品类", null=True, on_delete=models.SET_NULL)
     description = models.CharField(max_length=1000, verbose_name="描述", null=True, blank=True)
     weight = models.IntegerField(verbose_name="权重", null=True, default=0)
-    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     img = models.FileField(verbose_name="商品图片", null=True, upload_to="goods", blank=True)
     count = models.IntegerField(verbose_name="库存", null=True)
     old_price = models.FloatField(verbose_name="原价", null=True, blank=True)
@@ -101,7 +116,7 @@ else:
         return self.description
 
 
-class Address(models.Model):
+class Address(FakeDeleteModalManager):
     user = models.ForeignKey(User, verbose_name="用户", null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, verbose_name="收件人", null=True)
     phone = models.CharField(max_length=100, verbose_name="电话", null=True)
@@ -110,7 +125,6 @@ class Address(models.Model):
     area = models.CharField(max_length=100, verbose_name="城市", null=True)
     detail = models.CharField(max_length=100, verbose_name="详细信息", null=True)
     is_default = models.BooleanField(verbose_name="是否默认地址", default=False)
-    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True, null=True)
 
     class Meta:
@@ -121,7 +135,7 @@ class Address(models.Model):
         return self.receiver
 
 
-class Order(models.Model):
+class Order(FakeDeleteModalManager):
     name = models.CharField(max_length=100, verbose_name="名称", null=True)
     description = models.CharField(max_length=1000, verbose_name="描述", null=True)
     remark = models.CharField(max_length=1000, verbose_name="留言", null=True)
@@ -142,7 +156,6 @@ class Order(models.Model):
     pay_type = models.IntegerField(verbose_name="支付类型",
                                    choices=((0, "扫码支付"),),
                                    null=True, default=0)
-    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     code = models.CharField(max_length=255, verbose_name="订单号", unique=True, null=True)
     express_code = models.CharField(null=True, verbose_name="快递单号", max_length=30)
     addressee_name = models.CharField(max_length=100, verbose_name="收件人", null=True)
@@ -208,11 +221,10 @@ class PayQRCode(models.Model):
         return '{:.2f}'.format(self.price)
 
 
-class Banner(models.Model):
+class Banner(FakeDeleteModalManager):
     img = models.FileField(verbose_name="图片", null=True, upload_to="banner")
     title = models.CharField(verbose_name="标题", null=True, max_length=100)
     weight = models.IntegerField(null=True, verbose_name="权重", default=0)
-    is_showing = models.BooleanField(verbose_name="是否显示", default=True)
     url = models.CharField(max_length=1000, verbose_name="跳转地址", null=True, blank=True)
     type = models.IntegerField(verbose_name="类型", choices=((0, "首页轮播图"),))
     create_time = models.DateTimeField(verbose_name="创建时间", auto_now_add=True)
