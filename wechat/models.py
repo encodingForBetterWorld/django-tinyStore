@@ -50,7 +50,7 @@ class User(models.Model):
         return self.nickname
 
 
-class Goods(FakeDeleteModalManager):
+class Goods(FakeDeleteModal):
     name = models.CharField(max_length=100, verbose_name="名称", null=True)
     min_old_price = models.FloatField(verbose_name="最低原价", null=True, blank=True, editable=False)
     max_old_price = models.FloatField(verbose_name="最高原价", null=True, blank=True, editable=False)
@@ -70,7 +70,7 @@ class Goods(FakeDeleteModalManager):
         return self.name
 
 
-class GoodsType(FakeDeleteModalManager):
+class GoodsType(FakeDeleteModal):
     goods = models.ForeignKey(Goods, verbose_name="商品类", null=True, on_delete=models.SET_NULL)
     description = models.CharField(max_length=1000, verbose_name="描述", null=True, blank=True)
     weight = models.IntegerField(verbose_name="权重", null=True, default=0)
@@ -116,7 +116,7 @@ else:
         return self.description
 
 
-class Address(FakeDeleteModalManager):
+class Address(FakeDeleteModal):
     user = models.ForeignKey(User, verbose_name="用户", null=True, on_delete=models.SET_NULL)
     name = models.CharField(max_length=100, verbose_name="收件人", null=True)
     phone = models.CharField(max_length=100, verbose_name="电话", null=True)
@@ -135,7 +135,7 @@ class Address(FakeDeleteModalManager):
         return self.receiver
 
 
-class Order(FakeDeleteModalManager):
+class Order(FakeDeleteModal):
     name = models.CharField(max_length=100, verbose_name="名称", null=True)
     description = models.CharField(max_length=1000, verbose_name="描述", null=True)
     remark = models.CharField(max_length=1000, verbose_name="留言", null=True)
@@ -221,7 +221,7 @@ class PayQRCode(models.Model):
         return '{:.2f}'.format(self.price)
 
 
-class Banner(FakeDeleteModalManager):
+class Banner(FakeDeleteModal):
     img = models.FileField(verbose_name="图片", null=True, upload_to="banner")
     title = models.CharField(verbose_name="标题", null=True, max_length=100)
     weight = models.IntegerField(null=True, verbose_name="权重", default=0)
