@@ -173,7 +173,7 @@ class Order(FakeDeleteModal):
         return self.code or ''
 
 
-class OrderItem(models.Model):
+class OrderItem(FakeDeleteModal):
     order = models.ForeignKey(Order, verbose_name='订单', null=True, on_delete=models.SET_NULL)
     goods_type = models.ForeignKey(GoodsType, null=True, verbose_name="商品", on_delete=models.SET_NULL)
     goods_type_name = models.CharField(verbose_name='型号', null=True, max_length=100)
